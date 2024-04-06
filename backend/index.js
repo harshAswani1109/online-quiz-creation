@@ -3,9 +3,11 @@ const mysql = require("mysql");
 require("dotenv").config();
 // const Student = require("./Student");
 // const path = require("path");
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 8080;
 
 const app = express();
+var cors = require("cors");
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
