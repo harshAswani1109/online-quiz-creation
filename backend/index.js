@@ -233,6 +233,161 @@ app.delete("/api/questions/:questionId", (req, res) => {
   });
 });
 
+// PUT request to update quiz title and description
+app.put("/api/quizzes/:quizId", (req, res) => {
+  const { quizId } = req.params;
+  const { title, description } = req.body;
+
+  // Check if the quizId is a valid number
+  if (isNaN(quizId)) {
+    return res.status(400).json({ error: "Invalid quiz ID" });
+  }
+
+  // Check if title and description are provided in the request body
+  if (!title || !description) {
+    return res
+      .status(400)
+      .json({ error: "Title and description are required" });
+  }
+
+  // Query to update the quiz title and description in the database
+  const updateQuery =
+    "UPDATE quizzes SET title = ?, description = ? WHERE quiz_id = ?";
+
+  db.query(updateQuery, [title, description, quizId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Error updating quiz in database" });
+    }
+
+    // Check if any rows were affected by the update operation
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    return res.status(200).json({ message: "Quiz updated successfully" });
+  });
+});
+
+// PUT request to update a question
+app.put("/api/questions/:questionId", (req, res) => {
+  const { questionId } = req.params;
+  const { question_text, option1, option2, option3, option4, correct_option } =
+    req.body;
+
+  // Check if the questionId is a valid number
+  if (isNaN(questionId)) {
+    return res.status(400).json({ error: "Invalid question ID" });
+  }
+
+  // Check if all required fields are provided in the request body
+  if (
+    !question_text ||
+    !option1 ||
+    !option2 ||
+    !option3 ||
+    !option4 ||
+    !correct_option
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  // Query to update the question in the database
+  const updateQuery = `
+    UPDATE questions 
+    SET question_text = ?, option1 = ?, option2 = ?, option3 = ?, option4 = ?, correct_option = ?
+    WHERE question_id = ?
+  `;
+
+  db.query(
+    updateQuery,
+    [
+      question_text,
+      option1,
+      option2,
+      option3,
+      option4,
+      correct_option,
+      questionId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json({ error: "Error updating question in database" });
+      }
+
+      // Check if any rows were affected by the update operation
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+
+      return res.status(200).json({ message: "Question updated successfully" });
+    }
+  );
+});
+
+// PUT request to update a question
+app.put("/api/quizzes/:quizId/questions/:questionId", (req, res) => {
+  const { quizId, questionId } = req.params;
+  const { question_text, option1, option2, option3, option4, correct_option } =
+    req.body;
+
+  // Check if both quizId and questionId are valid numbers
+  if (isNaN(quizId) || isNaN(questionId)) {
+    return res.status(400).json({ error: "Invalid quiz ID or question ID" });
+  }
+
+  // Check if all required fields are provided in the request body
+  if (
+    !question_text ||
+    !option1 ||
+    !option2 ||
+    !option3 ||
+    !option4 ||
+    !correct_option
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  // Query to update the question in the database
+  const updateQuery = `
+    UPDATE questions 
+    SET question_text = ?, option1 = ?, option2 = ?, option3 = ?, option4 = ?, correct_option = ?
+    WHERE quiz_id = ? AND question_id = ?
+  `;
+
+  db.query(
+    updateQuery,
+    [
+      question_text,
+      option1,
+      option2,
+      option3,
+      option4,
+      correct_option,
+      quizId,
+      questionId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res
+          .status(500)
+          .json({ error: "Error updating question in database" });
+      }
+
+      // Check if any rows were affected by the update operation
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+
+      return res.status(200).json({ message: "Question updated successfully" });
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log("server running on port", PORT);
 });

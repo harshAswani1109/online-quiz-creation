@@ -15,17 +15,17 @@ const LoginPage = () => {
     // Validate credentials
     if (username === "admin" && password === "admin") {
       localStorage.setItem("role", "admin");
-      router.push("/admin/dashboard");
+      router.push("/dashboard");
     } else if (username === "user" && password === "user") {
       localStorage.setItem("role", "user");
-      router.push("/user/dashboard");
+      router.push("/dashboard");
     } else {
       setError("Invalid username or password");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Login Here

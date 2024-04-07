@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
+import UpdatePopup from "@/components/upDatePopUp";
+import DeletePopup from "@/components/deletePopUp";
+import ViewQuestionsPopup from "@/components/questionPopUp";
 
-const QuizzesPage = ({ role }) => {
+const QuizzesPage = () => {
+  const router = useRouter();
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [updateData, setUpdateData] = useState({
@@ -12,6 +17,28 @@ const QuizzesPage = ({ role }) => {
   });
   const [isUpdatePopupOpen, setIsUpdatePopupOpen] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isViewQuestionsPopupOpen, setIsViewQuestionsPopupOpen] =
+    useState(false);
+  const [questions, setQuestions] = useState([]);
+
+  const handleStartTest = () => {
+    router.push("/quiz");
+  };
+
+  const handleNavigateToHome = () => {
+    router.push("/");
+  };
+
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) {
+      setRole(storedRole);
+    } else {
+      router.push("/");
+    }
+  }, []);
 
   useEffect(() => {
     fetchQuizzes();
@@ -33,7 +60,7 @@ const QuizzesPage = ({ role }) => {
         `http://localhost:8080/api/quizzes/${selectedQuiz.quiz_id}`,
         updateData
       );
-      // Refresh quizzes after update
+
       fetchQuizzes();
       setIsUpdatePopupOpen(false);
     } catch (error) {
@@ -46,11 +73,23 @@ const QuizzesPage = ({ role }) => {
       await axios.delete(
         `http://localhost:8080/api/quizzes/${selectedQuiz.quiz_id}`
       );
-      // Refresh quizzes after delete
+
       fetchQuizzes();
       setIsDeletePopupOpen(false);
     } catch (error) {
       console.error("Error deleting quiz:", error);
+    }
+  };
+  const handleViewQuestions = async (quizId) => {
+    console.log(quizId);
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/quizzes/${quizId}/questions`
+      );
+      setQuestions(response.data);
+      setIsViewQuestionsPopupOpen(true);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
     }
   };
 
@@ -65,11 +104,7 @@ const QuizzesPage = ({ role }) => {
           >
             <h2 className="text-lg font-semibold">{quiz.title}</h2>
             <p className="text-sm text-gray-600">{quiz.description}</p>
-            {role === "user" ? (
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Attempt
-              </button>
-            ) : (
+            {role === "admin" && (
               <div className="mt-4 space-x-2">
                 <button
                   className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
@@ -89,75 +124,47 @@ const QuizzesPage = ({ role }) => {
                 >
                   Delete
                 </button>
+                <button
+                  className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
+                  onClick={() => handleViewQuestions(quiz.quiz_id)}
+                >
+                  View
+                </button>
               </div>
+            )}
+            {role === "user" && (
+              <button
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                onClick={handleStartTest}
+              >
+                Start Test
+              </button>
             )}
           </div>
         ))}
       </div>
 
-      {/* Update Popup */}
       {isUpdatePopupOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-md shadow-md">
-            <h2 className="text-lg font-semibold mb-4">Update Quiz</h2>
-            <input
-              type="text"
-              placeholder="Title"
-              className="w-full border border-gray-300 rounded-md p-2 mb-4"
-              value={updateData.title}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, title: e.target.value })
-              }
-            />
-            <textarea
-              placeholder="Description"
-              className="w-full border border-gray-300 rounded-md p-2 mb-4"
-              value={updateData.description}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, description: e.target.value })
-              }
-            />
-            <div className="flex justify-end">
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mr-2"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-              <button
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                onClick={() => setIsUpdatePopupOpen(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <UpdatePopup
+          updateData={updateData}
+          setUpdateData={setUpdateData}
+          handleUpdate={handleUpdate}
+          setIsUpdatePopupOpen={setIsUpdatePopupOpen}
+        />
       )}
 
-      {/* Delete Popup */}
       {isDeletePopupOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-md shadow-md">
-            <h2 className="text-lg font-semibold mb-4">
-              Are you sure you want to delete this quiz?
-            </h2>
-            <div className="flex justify-end">
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 mr-2"
-                onClick={handleDelete}
-              >
-                Yes
-              </button>
-              <button
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                onClick={() => setIsDeletePopupOpen(false)}
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeletePopup
+          handleDelete={handleDelete}
+          setIsDeletePopupOpen={setIsDeletePopupOpen}
+        />
+      )}
+
+      {isViewQuestionsPopupOpen && (
+        <ViewQuestionsPopup
+          questions={questions}
+          setIsViewQuestionsPopupOpen={setIsViewQuestionsPopupOpen}
+        />
       )}
     </div>
   );
