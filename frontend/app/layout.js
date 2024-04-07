@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="bg-[#A49DEA]">
         <Navbar />
-        <section className="min-h-screen p-12">{children}</section>
+        <section className="min-h-screen py-12 sm:px-12">{children}</section>
         <Footer />
       </body>
     </html>

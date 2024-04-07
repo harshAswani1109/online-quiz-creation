@@ -1,11 +1,13 @@
 "use client";
-
-import { useState, useEffect } from "react";
+// pages/quizzes.js
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import UpdatePopup from "@/components/upDatePopUp";
 import DeletePopup from "@/components/deletePopUp";
 import ViewQuestionsPopup from "@/components/questionPopUp";
+import Link from "next/link";
+import AddQuestionPopup from "@/components/addQuestionPopUp";
 
 const QuizzesPage = () => {
   const router = useRouter();
@@ -20,15 +22,8 @@ const QuizzesPage = () => {
   const [isViewQuestionsPopupOpen, setIsViewQuestionsPopupOpen] =
     useState(false);
   const [questions, setQuestions] = useState([]);
-
-  const handleStartTest = () => {
-    router.push("/quiz");
-  };
-
-  const handleNavigateToHome = () => {
-    router.push("/");
-  };
-
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
+  const [isAddQuestionsPopupOpen, setIsAddQuestionsPopupOpen] = useState(false);
   const [role, setRole] = useState("");
 
   useEffect(() => {
@@ -47,7 +42,6 @@ const QuizzesPage = () => {
   const fetchQuizzes = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/quizzes");
-      console.log(response);
       setQuizzes(response.data);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
@@ -60,7 +54,6 @@ const QuizzesPage = () => {
         `http://localhost:8080/api/quizzes/${selectedQuiz.quiz_id}`,
         updateData
       );
-
       fetchQuizzes();
       setIsUpdatePopupOpen(false);
     } catch (error) {
@@ -73,21 +66,21 @@ const QuizzesPage = () => {
       await axios.delete(
         `http://localhost:8080/api/quizzes/${selectedQuiz.quiz_id}`
       );
-
       fetchQuizzes();
       setIsDeletePopupOpen(false);
     } catch (error) {
       console.error("Error deleting quiz:", error);
     }
   };
+
   const handleViewQuestions = async (quizId) => {
-    console.log(quizId);
     try {
       const response = await axios.get(
         `http://localhost:8080/api/quizzes/${quizId}/questions`
       );
       setQuestions(response.data);
       setIsViewQuestionsPopupOpen(true);
+      setSelectedQuizId(quizId); // Store the selected quiz ID
     } catch (error) {
       console.error("Error fetching questions:", error);
     }
@@ -130,6 +123,15 @@ const QuizzesPage = () => {
                 >
                   View
                 </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  onClick={() => {
+                    setSelectedQuizId(quiz.quiz_id);
+                    setIsAddQuestionsPopupOpen(true);
+                  }}
+                >
+                  Add Que
+                </button>
               </div>
             )}
             {role === "user" && (
@@ -142,6 +144,16 @@ const QuizzesPage = () => {
             )}
           </div>
         ))}
+      </div>
+      <div className="fixed bottom-8 right-12">
+        <Link href={"/dashboard/admin"}>
+          <button
+            type="button"
+            className="text-white w-52 h-12 text-xl bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2"
+          >
+            Create New
+          </button>
+        </Link>
       </div>
 
       {isUpdatePopupOpen && (
@@ -164,6 +176,15 @@ const QuizzesPage = () => {
         <ViewQuestionsPopup
           questions={questions}
           setIsViewQuestionsPopupOpen={setIsViewQuestionsPopupOpen}
+          quizId={selectedQuizId}
+        />
+      )}
+
+      {isAddQuestionsPopupOpen && (
+        <AddQuestionPopup
+          quizId={selectedQuizId}
+          setIsAddQuestionsPopupOpen={setIsAddQuestionsPopupOpen}
+          fetchQuizzes={fetchQuizzes}
         />
       )}
     </div>
