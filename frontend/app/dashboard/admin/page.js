@@ -45,7 +45,7 @@ const CreateQuizPage = () => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-purple-500"
             required
           />
         </div>
@@ -57,14 +57,14 @@ const CreateQuizPage = () => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-purple-500"
             rows={4}
             required
           />
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
         >
           Create Quiz
         </button>

@@ -71,66 +71,73 @@ const QuizPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">{quiz.title}</h1>
-      <p className="text-lg">{quiz.description}</p>
+    <div className="container mx-auto p-8 sm:bg-white sm:mt-20">
+      <h1 className="text-3xl font-bold mb-8 text-black">Start Test</h1>
       <form onSubmit={handleSubmit}>
         {quiz.map((question) => (
           <div key={question.question_id} className="mb-4">
-            <p>{question.question_text}</p>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name={`question_${question.question_id}`}
-                  value={1}
-                  checked={selectedAnswers[question.question_id] === 1}
-                  onChange={() => handleOptionChange(question.question_id, 1)}
-                />
-                {question.option1}
-              </label>
-            </div>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name={`question_${question.question_id}`}
-                  value={2}
-                  checked={selectedAnswers[question.question_id] === 2}
-                  onChange={() => handleOptionChange(question.question_id, 2)}
-                />
-                {question.option2}
-              </label>
-            </div>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name={`question_${question.question_id}`}
-                  value={3}
-                  checked={selectedAnswers[question.question_id] === 3}
-                  onChange={() => handleOptionChange(question.question_id, 3)}
-                />
-                {question.option3}
-              </label>
-            </div>
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name={`question_${question.question_id}`}
-                  value={4}
-                  checked={selectedAnswers[question.question_id] === 4}
-                  onChange={() => handleOptionChange(question.question_id, 4)}
-                />
-                {question.option4}
-              </label>
+            <p className="first-letter:font-bold first-letter:mr-2 sm:text-2xl sm:mb-4">
+              Q. {question.question_text}
+            </p>
+            <div className="sm:grid grid-cols-2 gap-4">
+              <div className="sm:border-2 rounded-xl px-2 py-2.5 border-purple-500 sm:w-64">
+                <label>
+                  <input
+                    type="radio"
+                    className="mr-4"
+                    name={`question_${question.question_id}`}
+                    value={1}
+                    checked={selectedAnswers[question.question_id] === 1}
+                    onChange={() => handleOptionChange(question.question_id, 1)}
+                  />
+                  {question.option1}
+                </label>
+              </div>
+              <div className="sm:border-2 rounded-xl px-2 py-2.5 border-purple-500 sm:w-64">
+                <label>
+                  <input
+                    type="radio"
+                    className="mr-4"
+                    name={`question_${question.question_id}`}
+                    value={2}
+                    checked={selectedAnswers[question.question_id] === 2}
+                    onChange={() => handleOptionChange(question.question_id, 2)}
+                  />
+                  {question.option2}
+                </label>
+              </div>
+              <div className="sm:border-2 rounded-xl px-2 py-2.5 border-purple-500 sm:w-64">
+                <label>
+                  <input
+                    type="radio"
+                    className="mr-4"
+                    name={`question_${question.question_id}`}
+                    value={3}
+                    checked={selectedAnswers[question.question_id] === 3}
+                    onChange={() => handleOptionChange(question.question_id, 3)}
+                  />
+                  {question.option3}
+                </label>
+              </div>
+              <div className="sm:border-2 rounded-xl px-2 py-2.5 border-purple-500 sm:w-64">
+                <label>
+                  <input
+                    type="radio"
+                    className="mr-4"
+                    name={`question_${question.question_id}`}
+                    value={4}
+                    checked={selectedAnswers[question.question_id] === 4}
+                    onChange={() => handleOptionChange(question.question_id, 4)}
+                  />
+                  {question.option4}
+                </label>
+              </div>
             </div>
           </div>
         ))}
         <button
           type="submit"
-          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
+          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600  sm:w-60 sm:mt-4"
         >
           Submit
         </button>

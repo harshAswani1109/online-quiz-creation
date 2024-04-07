@@ -91,64 +91,71 @@ const QuizzesPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-8">
+    <div className="container mx-auto p-8 w-full">
       <h1 className="text-3xl font-bold mb-8">Quizzes</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
         {quizzes.map((quiz) => (
           <div
             key={quiz.quiz_id}
-            className="p-4 bg-gray-100 rounded-md shadow-md"
+            className="relative bg-white rounded-lg overflow-hidden shadow-xl transition duration-300 transform hover:-translate-y-1 hover:scale-105"
           >
-            <h2 className="text-lg font-semibold">{quiz.title}</h2>
-            <p className="text-sm text-gray-600">{quiz.description}</p>
-            {role === "admin" && (
-              <div className="mt-4 space-x-2">
+            <div className="bg-gradient-to-b from-purple-500 to-indigo-600 h-20 flex flex-col items-start px-6 gap-y-1 justify-center">
+              <h2 className="text-xl font-semibold text-white">{quiz.title}</h2>
+              <p className="text-sm ont-semibold text-white">
+                {quiz.description}
+              </p>
+            </div>
+            <div className="p-4">
+              {role === "admin" && (
+                <div className="flex flex-col md:flex-row md:justify-start">
+                  <button
+                    className="bg-green-500 text-white px-4 py-2 rounded-md mb-2 md:mb-0 md:mr-2 hover:bg-green-600 transition duration-300"
+                    onClick={() => {
+                      setSelectedQuiz(quiz);
+                      setIsUpdatePopupOpen(true);
+                    }}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-md mb-2 md:mb-0 md:mr-2 hover:bg-red-600 transition duration-300"
+                    onClick={() => {
+                      setSelectedQuiz(quiz);
+                      setIsDeletePopupOpen(true);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="bg-purple-500 text-white px-4 py-2 rounded-md mb-2 md:mb-0 md:mr-2 hover:bg-purple-600 transition duration-300"
+                    onClick={() => handleViewQuestions(quiz.quiz_id)}
+                  >
+                    View
+                  </button>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+                    onClick={() => {
+                      setSelectedQuizId(quiz.quiz_id);
+                      setIsAddQuestionsPopupOpen(true);
+                    }}
+                  >
+                    Add Que
+                  </button>
+                </div>
+              )}
+              {role === "user" && (
                 <button
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-                  onClick={() => {
-                    setSelectedQuiz(quiz);
-                    setIsUpdatePopupOpen(true);
-                  }}
+                  className="bg-purple-500 text-white px-4 py-2 rounded-md w-full hover:bg-purple-600 transition duration-300"
+                  onClick={() => handleStartTest(quiz.quiz_id)}
                 >
-                  Update
+                  Start Test
                 </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                  onClick={() => {
-                    setSelectedQuiz(quiz);
-                    setIsDeletePopupOpen(true);
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600"
-                  onClick={() => handleViewQuestions(quiz.quiz_id)}
-                >
-                  View
-                </button>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                  onClick={() => {
-                    setSelectedQuizId(quiz.quiz_id);
-                    setIsAddQuestionsPopupOpen(true);
-                  }}
-                >
-                  Add Que
-                </button>
-              </div>
-            )}
-            {role === "user" && (
-              <button
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                onClick={() => handleStartTest(quiz.quiz_id)}
-              >
-                Start Test
-              </button>
-            )}
+              )}
+            </div>
           </div>
         ))}
       </div>
+
       <div className="fixed bottom-8 right-12">
         <Link href={"/dashboard/admin"}>
           <button
