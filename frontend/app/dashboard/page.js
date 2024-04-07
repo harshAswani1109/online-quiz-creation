@@ -86,6 +86,10 @@ const QuizzesPage = () => {
     }
   };
 
+  const handleStartTest = (quizId) => {
+    router.push(`/dashboard/${quizId}`);
+  };
+
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8">Quizzes</h1>
@@ -137,7 +141,7 @@ const QuizzesPage = () => {
             {role === "user" && (
               <button
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                onClick={handleStartTest}
+                onClick={() => handleStartTest(quiz.quiz_id)}
               >
                 Start Test
               </button>

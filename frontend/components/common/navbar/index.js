@@ -1,23 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) {
+      setRole(storedRole);
+    }
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <nav className="bg-[#00000050] p-4 flex items-center justify-between flex-wrap fixed w-full">
+    <nav className="bg-[#00000050] backdrop-blur-3xl p-4 flex items-center justify-between flex-wrap fixed w-full">
       {/* Logo */}
       <div className="flex items-center flex-shrink-0 mr-6">
-        <span className="text-white text-md font-bold">YourLogo</span>
+        <span className="text-white text-md font-bold">h-card</span>
       </div>
 
-      {/* Hamburger Menu */}
       <div className="block md:hidden">
         <button
           onClick={toggleMenu}
@@ -54,32 +61,37 @@ const Navbar = () => {
         <ul className="flex flex-col md:flex-row justify-center md:flex-grow">
           <li>
             <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
-              <Link href="/home">
+              <Link href="/">
                 <span>Home</span>
               </Link>
             </div>
           </li>
           <li>
             <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
-              <Link href="/running-out-products">
-                <span>Running Out Products</span>
+              <Link href="/dashboard">
+                <span>Dashboard</span>
               </Link>
             </div>
           </li>
-          <li>
-            <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
-              <Link href="/all-products">
-                <span>All Products</span>
-              </Link>
-            </div>
-          </li>
+          {role === "admin" && (
+            <li>
+              <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
+                <Link href="/dashboard/admin">
+                  <span>Create New Quiz</span>
+                </Link>
+              </div>
+            </li>
+          )}
         </ul>
       </div>
 
-      {/* User Name */}
-      <div className="md:flex items-center hidden">
-        <span className="text-white font-semibold">Username</span>
-      </div>
+      {role && (
+        <div className="md:flex items-center hidden">
+          <span className="text-white font-semibold">
+            {role === "admin" ? "Hi, admin" : "Hi, user"}
+          </span>
+        </div>
+      )}
     </nav>
   );
 };
