@@ -11,6 +11,8 @@ const Navbar = () => {
     const storedRole = localStorage.getItem("role");
     if (storedRole) {
       setRole(storedRole);
+    } else {
+      router.push("/");
     }
   }, []);
 
@@ -78,6 +80,15 @@ const Navbar = () => {
               <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
                 <Link href="/dashboard/admin">
                   <span>Create New Quiz</span>
+                </Link>
+              </div>
+            </li>
+          )}
+          {role === "user" && (
+            <li>
+              <div className="block text-white px-4 py-2 rounded cursor-pointer hover:underline">
+                <Link href="/dashboard/profile">
+                  <span>Profile</span>
                 </Link>
               </div>
             </li>

@@ -1,6 +1,7 @@
 // components/AddQuestionPopup.js
 import React, { useState } from "react";
 import axios from "axios";
+import { FaTimes } from "react-icons/fa";
 
 const AddQuestionPopup = ({
   quizId,
@@ -35,6 +36,12 @@ const AddQuestionPopup = ({
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-md shadow-md">
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-600 focus:outline-none"
+          onClick={() => setIsAddQuestionsPopupOpen(false)}
+        >
+          <FaTimes />
+        </button>
         <h2 className="text-lg font-bold mb-4">Add Question</h2>
         <form onSubmit={handleAddQuestion}>
           <div className="mb-4">
